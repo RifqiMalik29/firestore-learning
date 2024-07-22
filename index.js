@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js";
-import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, where, query } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, where, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBS14Pt_L6qxC8gE-s62ERLZa79z9cyaTE",
@@ -30,6 +30,7 @@ getDocs(cafesCollection).then((snapshot) => {
 });
 
 // getDataByQueries();
+// getDataByOrder();
 
 const cafeList = document.querySelector("#cafe-list");
 const form = document.querySelector("#add-cafe-form");
@@ -77,6 +78,31 @@ form.addEventListener('submit', event => {
 
 function getDataByQueries(value) {
     const queryTemp = query(cafesCollection, where("city", "==", "Malang"));
+
+    getDocs(queryTemp).then((snapshot) => {
+        snapshot.docs.forEach(doc => {
+            renderCafe(doc)
+        });
+    }).catch((error) => {
+        console.error("Error getting documents: ", error);
+    });
+}
+
+function getDataByOrder() {
+    const queryTemp = query(cafesCollection, orderBy('name', 'desc'));
+
+    getDocs(queryTemp).then((snapshot) => {
+        snapshot.docs.forEach(doc => {
+            renderCafe(doc)
+        });
+    }).catch((error) => {
+        console.error("Error getting documents: ", error);
+    });
+}
+
+// FUNCTION INI MEMERLUKAN INDEX DI DALAM COLLECTIONNYA
+function getDataByOrderAndQueries() {
+    const queryTemp = query(cafesCollection, orderBy('name', 'desc'), where("city", "==", "Malang"));
 
     getDocs(queryTemp).then((snapshot) => {
         snapshot.docs.forEach(doc => {
