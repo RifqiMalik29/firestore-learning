@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cloud Cafe</title>
     <link rel="stylesheet" href="styles.css" />
-    <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"></script>
 </head>
 
 <body>
@@ -21,27 +19,7 @@
 
     </div>
 
-    <script src="index.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBS14Pt_L6qxC8gE-s62ERLZa79z9cyaTE",
-            authDomain: "fir-firestore-learning-21ede.firebaseapp.com",
-            projectId: "fir-firestore-learning-21ede",
-            storageBucket: "fir-firestore-learning-21ede.appspot.com",
-            messagingSenderId: "698792780836",
-            appId: "1:698792780836:web:aff4cbbeaba86ecea124b1",
-            measurementId: "G-3N6G80C3L5"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const db = firebase.firestore();
-        db.settings({ timestampsInSnapshots: true });
-    </script>
+    <script src="index.js" type="module"></script>
 </body>
 
 </html>
