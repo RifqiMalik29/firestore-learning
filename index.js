@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js";
-import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, where, query } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBS14Pt_L6qxC8gE-s62ERLZa79z9cyaTE",
@@ -28,6 +28,8 @@ getDocs(cafesCollection).then((snapshot) => {
 }).catch((error) => {
     console.error("Error getting documents: ", error);
 });
+
+// getDataByQueries();
 
 const cafeList = document.querySelector("#cafe-list");
 const form = document.querySelector("#add-cafe-form");
@@ -72,3 +74,15 @@ form.addEventListener('submit', event => {
     form.name.value = '';
     form.city.value = '';
 });
+
+function getDataByQueries(value) {
+    const queryTemp = query(cafesCollection, where("city", "==", "Malang"));
+
+    getDocs(queryTemp).then((snapshot) => {
+        snapshot.docs.forEach(doc => {
+            renderCafe(doc)
+        });
+    }).catch((error) => {
+        console.error("Error getting documents: ", error);
+    });
+}
