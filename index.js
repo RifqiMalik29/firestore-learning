@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js";
-import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBS14Pt_L6qxC8gE-s62ERLZa79z9cyaTE",
@@ -32,19 +32,30 @@ getDocs(cafesCollection).then((snapshot) => {
 const cafeList = document.querySelector("#cafe-list");
 const form = document.querySelector("#add-cafe-form");
 
-function renderCafe(doc) {
+function renderCafe(_doc) {
     let li = document.createElement('li');
     let name = document.createElement('span');
     let city = document.createElement('span');
+    let cross = document.createElement('div');
 
-    li.setAttribute('data-id', doc.id);
-    name.textContent = doc.data().name;
-    city.textContent = doc.data().city;
+    li.setAttribute('data-id', _doc.id);
+    name.textContent = _doc.data().name;
+    city.textContent = _doc.data().city;
+    cross.textContent = 'x'
 
     li.appendChild(name);
     li.appendChild(city);
+    li.appendChild(cross);
 
     cafeList.appendChild(li);
+
+    // DELETE DATA
+    cross.addEventListener('click', event => {
+        event.stopPropagation();
+        let id = event.target.parentElement.getAttribute('data-id');
+        const docRef = doc(db, 'cafes', id);
+        deleteDoc(docRef).then(() => console.log('delete success')).catch(err => console.error('delete error', err));
+    });
 }
 
 form.addEventListener('submit', event => {
