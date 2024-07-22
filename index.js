@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js";
-import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, where, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, where, query, orderBy, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBS14Pt_L6qxC8gE-s62ERLZa79z9cyaTE",
@@ -59,6 +59,7 @@ function renderCafe(_doc) {
         let id = event.target.parentElement.getAttribute('data-id');
         const docRef = doc(db, 'cafes', id);
         deleteDoc(docRef).then(() => console.log('delete success')).catch(err => console.error('delete error', err));
+        // updateData(id);
     });
 }
 
@@ -116,7 +117,7 @@ function getDataByOrderAndQueries() {
 
 function getRealtimeData() {
     const queryTemp = query(cafesCollection, orderBy('name', 'desc'));
-    
+
     onSnapshot(queryTemp, snapshot => {
         let changes = snapshot.docChanges();
         console.log(changes)
@@ -126,9 +127,22 @@ function getRealtimeData() {
             } else if (change.type == 'removed') {
                 let li = cafeList.querySelector(`[data-id=${change.doc.id}]`);
                 cafeList.removeChild(li);
+            } else {
+                let li = cafeList.querySelector(`[data-id=${change.doc.id}]`);
+                cafeList.removeChild(li);
+                renderCafe(change.doc);
             }
         })
     }, error => {
         console.error("Error getting documents: ", error);
     });
+}
+
+function updateData(_id) {
+    const docRef = doc(db, 'cafes', _id);
+    updateDoc(docRef, {
+        name: 'Boogie',
+        city: 'Boogieland'
+    }).then(() => console.log('update success'))
+        .catch(err => console.error('update error', err))
 }
