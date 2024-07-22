@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js";
-import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, where, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, where, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBS14Pt_L6qxC8gE-s62ERLZa79z9cyaTE",
@@ -21,16 +21,17 @@ const db = getFirestore(app);
 const cafesCollection = collection(db, 'cafes');
 
 // Fetch the documents in the cafes collection
-getDocs(cafesCollection).then((snapshot) => {
-    snapshot.docs.forEach(doc => {
-        renderCafe(doc)
-    });
-}).catch((error) => {
-    console.error("Error getting documents: ", error);
-});
+// getDocs(cafesCollection).then((snapshot) => {
+//     snapshot.docs.forEach(doc => {
+//         renderCafe(doc)
+//     });
+// }).catch((error) => {
+//     console.error("Error getting documents: ", error);
+// });
 
 // getDataByQueries();
 // getDataByOrder();
+getRealtimeData()
 
 const cafeList = document.querySelector("#cafe-list");
 const form = document.querySelector("#add-cafe-form");
@@ -109,6 +110,25 @@ function getDataByOrderAndQueries() {
             renderCafe(doc)
         });
     }).catch((error) => {
+        console.error("Error getting documents: ", error);
+    });
+}
+
+function getRealtimeData() {
+    const queryTemp = query(cafesCollection, orderBy('name', 'desc'));
+    
+    onSnapshot(queryTemp, snapshot => {
+        let changes = snapshot.docChanges();
+        console.log(changes)
+        changes.forEach(change => {
+            if (change.type == 'added') {
+                renderCafe(change.doc);
+            } else if (change.type == 'removed') {
+                let li = cafeList.querySelector(`[data-id=${change.doc.id}]`);
+                cafeList.removeChild(li);
+            }
+        })
+    }, error => {
         console.error("Error getting documents: ", error);
     });
 }
