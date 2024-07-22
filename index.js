@@ -1,8 +1,6 @@
-// index.js
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBS14Pt_L6qxC8gE-s62ERLZa79z9cyaTE",
@@ -31,7 +29,8 @@ getDocs(cafesCollection).then((snapshot) => {
     console.error("Error getting documents: ", error);
 });
 
-const cafeList = document.querySelector("#cafe-list")
+const cafeList = document.querySelector("#cafe-list");
+const form = document.querySelector("#add-cafe-form");
 
 function renderCafe(doc) {
     let li = document.createElement('li');
@@ -47,3 +46,18 @@ function renderCafe(doc) {
 
     cafeList.appendChild(li);
 }
+
+form.addEventListener('submit', event => {
+    // AGAR HALAMAN TIDAK TER RELOAD
+    event.preventDefault();
+    if (form.name.value === "" && form.city.value === "") {
+        console.log("Please Add Cafe's name and Cafe's City")
+    } else {
+        addDoc(cafesCollection, {
+            name: form.name.value,
+            city: form.city.value
+        });
+    }
+    form.name.value = '';
+    form.city.value = '';
+});
